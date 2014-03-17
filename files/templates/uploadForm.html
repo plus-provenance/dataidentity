@@ -1,0 +1,44 @@
+<html>
+  <head>
+   <title>Upload Files for Processing</title>
+
+   <link rel="stylesheet" 
+         href="/static/css/south-street/jquery-ui-1.10.3.custom.css"/>
+  </head>
+<body>
+{% load multiuploader %}
+
+<!--
+<form method='POST' action='/upload/' enctype='multipart/form-data'>
+{% csrf_token %}
+<p>
+    {{ form.text }}
+    {{ form.text.errors }}
+    {{ form.uploadedFiles }} {{ form.uploadedFiles.errors }}
+</p>
+<p>
+    {% multiuploader_noscript "uploadedFiles" %}
+
+    <input id="send" type="submit" value="Send" class="button">
+    <a id="showUpload" type="button" class="button"><i class="attachment"></i>Attach files</a>
+</p>
+</form>
+-->
+
+<div class="ui-widget">
+  <div class="ui-widget-header"><h2>Upload Files for Processing</h2></div>
+  <div class="ui-widget-content">
+
+  <p>Select your files below; immediately after you select them they will
+  be uploaded to the server for processing.  This server does not retain
+  any information after processing is complete.
+
+  <p>
+
+{% multiuploader_form form_type="default" template="multiuploader/form.html" target_form_fieldname="uploadedFiles" js_prefix="jQuery" send_button_selector="input[name=_edit]" wrapper_element_id="fileUploads" lock_while_uploading=True number_files_attached=0 %}
+
+</div>
+</div>
+
+</body>
+</html>

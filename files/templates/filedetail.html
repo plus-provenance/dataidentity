@@ -1,0 +1,93 @@
+<div class="ui-widget">      
+   <div id='1-{{file.md5}}' class='ui-widget-header'>
+     <h2>{{ file.names.all.0.filename }}</h2>
+   </div>
+   
+   <div class='ui-widget-body'>
+     {% if file.extension and file.extension.strip %}
+     <p>Find other files with the extension 
+       <a href="/filename/{{file.extension}}">{{file.extension}}</a>
+     {% endif %}
+
+     <p><table>
+	 <tr><td><thead>Analyzed {{file.analysisDate}}</thead></td></tr>
+     <tr><td>Size (bytes)&nbsp;</td>
+     <td>{{file.size}} <a href="/size/{{file.size}}"><img border='0' width='20' height='20' src="/static/img/link.png" alt='Other files of this size'/></a>
+	 <tr><td>MD5&nbsp;</td><td>{{file.md5}} 
+	 <a href="/hash/{{file.md5}}"><img border='0' width='20' height='20' src="/static/img/link.png" alt='Permalink'/></a>
+	 </td></tr>
+	 <tr><td>SHA1&nbsp;</td><td>{{file.sha1}}</td></tr>
+	 <tr><td>CRC32&nbsp;</td><td>{{file.crc32}}</td></tr>
+     </table>
+   
+	<div class="tabs verttab">
+	   <ul>     
+	     <li><a href="#2-{{file.md5}}">Metadata</a></li>
+	     {% if file.containers or file.containments %}<li><a href="#3-{{file.md5}}">Relationships</a></li>{% endif %}
+	     <li><a href="#4-{{file.md5}}">Names</a></li>
+	     <li><a href='#5-{{file.md5}}'>Links</a></li>
+	   </ul>
+	
+	   <div id='2-{{file.md5}}'>
+	     {% if file.metadata.all %}
+	     <p>Click the link icon to discover other files that have this same metadata pair.</p>
+	     
+	     <ul id='mdlist'>
+	       {% for mditem in file.metadata.all %}          
+		      <li>{{mditem.key}}: {{mditem.value}}&nbsp;
+		      {% if mditem.key and mditem.value %}
+		         <a href="/files/{{mditem.key|urlencode:""}}/{{mditem.value|urlencode:""}}"><img border='0' width='20' height='20' src="/static/img/link.png" alt='Find Related'/></a>
+		      {% endif %}		      
+		      </li>	      
+	       {% endfor %} 
+	     </ul>
+	     {% else %}
+	       <p>No metadata available.
+	     {% endif %}
+	   </div>
+	
+	   {% if file.containers or file.containments %}
+	   <div id='3-{{file.md5}}'>
+		  <p>Contains:
+	      <ul>
+	      {% for relationship in file.containments %}
+	         <li><a href="/hash/{{relationship.object.md5}}">{{relationship.object.names.all.0.location}}</a></li>
+	      {% endfor %}
+	      </ul>
+	
+	      <p>Contained By:
+		  <ul>
+		     {% for relationship in file.containers %}
+		     <li><a href="/hash/{{relationship.object.md5}}">{{relationship.object.names.all.0.location}}</a></li>   
+		     {% endfor %}
+		  </ul>
+	   </div> 
+	   {% endif %}
+	
+	   <div id='4-{{file.md5}}'>
+	     <ul>
+	       {% for name in file.names.all %}
+	       {% if name.is_url %}
+	       <li><a href="{{name.location}}">{{name.location}}</a></li>
+	       {% else %}
+	       <li>{{ name.location }}</li>
+	       {% endif %}
+	       {% endfor %}
+	     </ul>
+	   </div>
+	   
+	   <div id="5-{{file.md5}}">
+	   <p>These links provide access to other sites, which may have information about a given file.
+	   Note that some sites such as Bit9's File Advisor require a free account to view results.
+	   
+	   <ul>
+	      <li><a href="http://www.threatexpert.com/report.aspx?md5={{file.md5}}">Lookup on Threat Expert</a></li>
+	      <li><a href="https://fileadvisor.bit9.com/services/extinfo.aspx?md5={{file.md5}}">Lookup on Bit9 File Advisor</a></li>
+	      <li><a href="https://www.virustotal.com/latest-scan/{{file.md5}}">Lookup on Virus Total</a>
+	   </ul>
+	   </div>
+	</div> <!-- end tabs -->
+   </div> <!-- End widget body -->
+</div> <!-- End widget -->
+
+<p><hr/><p>

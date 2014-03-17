@@ -1,0 +1,183 @@
+<html>
+  <head>
+{% if files %}
+  {% if files.1 %}
+     <title>Data Identity:  {{files|length}} results</title>
+  {% else %}
+     <title>Data Identity:  {{files.0.names.all.0.filename}}</title>
+  {% endif %}
+{% else %}
+  <title>Data Identity: No Results</title>
+{% endif %}
+    </head>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <script src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
+  <script src="/static/dataidentity.js"></script>
+  
+  <link rel="stylesheet"
+        href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css"/> 
+        <!--  href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/south-street/jquery-ui.min.css" -->
+
+  <link type="text/css" rel="stylesheet" href="http://layout.jquery-dev.net/lib/css/layout-default-latest.css" />
+
+
+  <style> 
+   .ui-progressbar { position: relative; }
+   .progress-label { 
+       position: absolute;
+       left: 50%;
+       top: 4px;
+       font-weight: bold;
+       text-shadow: 1px 1px 0 #fff;
+   }
+  </style>
+
+  <style>
+.ui-tabs-vertical { width: 55em; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+  </style>
+
+  <script>
+    $(document).ready(function() { 
+       $(".tabs").tabs();
+       
+       $( ".verttab" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+       $( ".verttab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+       
+       $(".accordion").accordion();
+       
+       /*$(".hashLookup").each(function() {
+    	   var t = $(this);
+    	   $.getJSON("/hash/" + t.html(), function(data) { 
+    		   t.html(data.names[0]);
+    	   });
+       });*/
+       
+       $("#filenameSubmit").click(function () { 
+    	  var filename = $("#filename").val();
+    	  window.location = "/filename/" + encodeURIComponent(filename);
+    	  return false;
+       });
+       
+       $("#hashSubmit").click(function() { hashLookup("#hashEntry"); return false; });
+    
+       $("#lookupSubmit").click(function () {
+ 	     lookupMetadata($("#key").val(), $("#value").val());
+ 	     return false; 
+       });
+
+       $("#analyzeSubmit").click(function() { analysisDialog("#url"); return false; });
+       
+       $("table").styleTable();
+    }); // End on ready
+  </script>
+<body>
+
+<div class="ui-layout-north ui-widget">
+<a href="/"><img src="/static/img/dataidentity.png" style="height:100px; width: auto; " border='0'/></a><br/>
+<!-- <a href="/uploadFiles/">Upload Files</a> | --> 
+<a href="#" onclick="showStats();" id="statsClick">Statistics</a> |
+<a href="/queue">Queue</a>
+
+{% if files.paginator %}
+  <span style="float:right">
+  {% if files.has_previous %}
+     <a href="?page={{ files.previous_page_number }}">(previous)</a>
+  {% endif %}
+
+  
+  Page {{ files.number }} of {{ files.paginator.num_pages }}.
+  
+  {% if files.has_next %}
+     <a href="?page={{ files.next_page_number }}">(next)</a>
+  {% endif %}
+  </span>
+{% endif %}
+
+</div> <!-- end north -->
+
+<div class="ui-layout-center">
+<div class="tabs">
+	<ul>
+      <li><a href="#results">Files</a></li>
+      <li><a href="#lookup">Locate Files</a></li>
+      <li><a href="#analyze">Analyze</a></li>
+    </ul>
+
+ <div id='results'>
+{% if files %}
+  {% for file in files %}
+     {% include "filedetail.html" %}
+  {% endfor %}
+{% else %}
+  <h2>No results.</h2>
+{% endif %}
+</div> <!-- End results -->
+
+
+<div id='lookup'>
+     <h2>By Name</h2>
+     <form name='name'> {% csrf_token %}
+        File name contains:  <input id='filename' name='filename' value='.zip'/><br/>
+        <input id='filenameSubmit' type='submit' value='Lookup'> 
+     </form>
+
+     <h2>By Metadata</h2>
+     <form name='lookup'> {% csrf_token %}
+       Key name:  <input id='key' type='text' 
+                         name='key' value='mimetype'><br/>
+       Value:  <input id='value' type='text' 
+                      name='value' value='application/zip'><br/>
+       <input id='lookupSubmit' type='submit' value='Lookup'>
+     </form>
+     
+     <h2>By Hash</h2>
+     <form name='lookupHash'>
+        MD5/SHA1/CRC32 Hash:  <input id='hashEntry' type='text' name='hash' value=''><br/>
+     	<input id='hashSubmit' type='submit' value='Lookup'>
+     </form>
+</div> <!-- End lookup -->
+
+<div id='analyze'>
+     <form name='analyze'> {% csrf_token %}
+       Enter a series of URLs (one per line) to analyze.  
+       <p><textarea rows="5" cols="50" id='url' name='url'>
+http://ipv4.download.thinkbroadband.com/5MB.zip
+       </textarea><br/>
+       <input id='analyzeSubmit' type='submit' value='Analyze'>
+     </form>
+
+     <p><strong>Please note</strong> that for large files, this analysis 
+     may take some time.</p>
+
+     <p>Please keep in mind that for security reasons, there are several 
+        rules for acceptable URLs:
+        <ul><li>URLs may not contain a query or a fragment. For 
+                example, http://somesite.com/page<strong>?x=5</strong> 
+                (a query) and
+                http://somesite.com/foo.html#<strong>anchor</strong> 
+                (a fragment identifier)</li>
+            <li>Only HTTP and HTTPS URLs are accepted at this time.</li>
+            <li>URLs may not contain passwords.  For example:
+                http://username:<b>secret123</b>@somesite.com/</li>
+            <li>The analysis software 
+                <strong>will not follow redirects</strong>.   This means,
+                among other things, that URL shorteners like bit.ly and 
+                goo.gl cannot be analyzed.</li>
+        </ul>
+</div> <!-- End analyze -->
+</div> <!-- End tabs -->
+</div> <!-- End center -->
+
+<div class="ui-layout-south ui-widget">
+Copyright (C) 2013
+</div>
+
+</body>
+</html>
