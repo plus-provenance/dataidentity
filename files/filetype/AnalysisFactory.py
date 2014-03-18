@@ -90,9 +90,16 @@ class AnalysisFactory:
             # Check the file magic for the first block.
             if firstBlock:                
                 self.runExtractorOnBuffer(buf, buf.__len__())
-                self.filemagic = magic.from_buffer(buf)
-                # print("FILEMAGIC:  %s" % self.filemagic)
-                self.metadata.append(("filemagic", self.filemagic))                
+                
+                try:                
+                    self.filemagic = magic.from_buffer(buf)
+                    # print("FILEMAGIC:  %s" % self.filemagic)
+                    self.metadata.append(("filemagic", self.filemagic))
+                except Exception, err:
+                    template = "{0} Arguments:\n{1!r}"
+                    message = template.format(type(err).__name__, err.args)         
+                    print("Failed to extract file magic %s: %s" % message)                     
+                                
                 firstBlock = False
             
             md5.update(buf)

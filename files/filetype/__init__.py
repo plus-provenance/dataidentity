@@ -24,6 +24,12 @@ except:
     print("Unable to support ZIP extensions: please install a python that supports zipfile")
 
 try:
+    import magic
+    magic.from_buffer("Foo")
+except:
+    print("Unable to get filemagic via the magic module: please check your configuration")
+
+try:
     import tarfile
 except: 
     print("Unable to import tarfile: please install it for better TAR file support.")
