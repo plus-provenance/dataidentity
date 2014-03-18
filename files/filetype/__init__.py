@@ -56,7 +56,7 @@ try:
     print "Got extractor"
     xtractor = extractor.Extractor()
     print "Created extractor"
-except OSError:
+except:
     print("Can not find python module 'extractor': some metadata extraction disabled.")
     xtractor = None
 
