@@ -98,7 +98,7 @@ class AnalysisFactory:
                 except Exception, err:
                     template = "{0} Arguments:\n{1!r}"
                     message = template.format(type(err).__name__, err.args)         
-                    print("Failed to extract file magic %s: %s" % message)                     
+                    print("Failed to extract file magic: %s" % message)                     
                                 
                 firstBlock = False
             
