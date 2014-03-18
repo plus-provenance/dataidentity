@@ -14,7 +14,7 @@
 from files.models import SubmissionQueue
 import files.downloader as downloader
 import os
-from files.analysis import get_appropriate_factory
+import files.analysis
 
 def process(f): return processFile(f)
 
@@ -70,9 +70,9 @@ def processFile(f, location=None, mimeType=None, statusCallback=None):
 
     # Get the right class to use to analyze this.
     if location is not None:
-        analysisFactoryClass = get_appropriate_factory(location, mimeType)
+        analysisFactoryClass = files.analysis.get_appropriate_factory(location, mimeType)
     else: 
-        analysisFactoryClass = get_appropriate_factory(path, mimeType)
+        analysisFactoryClass = files.analysis.get_appropriate_factory(path, mimeType)
 
     # Create the analysis factory, run the analysis.
     
