@@ -23,7 +23,9 @@ class OfficeFile(ZIPFile):
                            'HiddenSlides', 'MMClips', 'Company', 'AppVersion'
                         ]
                        }
-                
+            
+        zf = None
+    
         try:
             zf = ZipFile(self.filename)
 
@@ -53,7 +55,7 @@ class OfficeFile(ZIPFile):
             traceback.print_exc(file=sys.stdout)
             return False
         finally:
-            files.filetype.qClose(zf)
+            if zf is not None: files.filetype.qClose(zf)
             
 for format in [".doc", ".docx", ".xls", ".xslx", ".ppt", ".pptx", "application/msword", 
                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", 

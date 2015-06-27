@@ -14,26 +14,26 @@
 from rest_framework import serializers
 from files.models import * 
 
-class FileRelationshipModelField(serializers.WritableField):
-    def to_native(self, obj):
+class FileRelationshipModelField(serializers.BaseSerializer):
+    def to_representation(self, obj):
         arr = []
         for rel in obj.all():
             arr.append({"subject" : rel.subject.md5, "verb" : rel.verb, "object" : rel.object.md5})
         
         return arr
 
-class FileMetadataModelField(serializers.WritableField):
+class FileMetadataModelField(serializers.BaseSerializer):
     """Metadata objects are serialized as a dictionary"""
-    def to_native(self, obj):
+    def to_representation(self, obj):
         mdEntries = obj.all()
         d = {}
         for mdEntry in mdEntries:
             d[mdEntry.key] = mdEntry.value
         return d
 
-class FileNameModelField(serializers.WritableField):
+class FileNameModelField(serializers.BaseSerializer):
     """Filenames are serialized as a simple primitive location"""
-    def to_native(self, obj):
+    def to_representation(self, obj):
         arr = []
         for fnameEntry in obj.all():
             arr.append(fnameEntry.location)

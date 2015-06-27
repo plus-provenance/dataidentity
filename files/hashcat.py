@@ -15,10 +15,12 @@ import sys
 import os
 import time
 from files.processing import process
+import django
 
 if __name__ == "__main__":
     print "My PID is %s" % os.getpid()
-    time.sleep(5)
+    django.setup()
+    #time.sleep(5)
     
     if len(sys.argv) > 1:
         for file in sys.argv[1:]:
