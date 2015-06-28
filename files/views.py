@@ -263,3 +263,4 @@ def stats(request):
     dict['metadata'] = FileMetadata.objects.count()
     
     return JSONResponse(dict)
+
