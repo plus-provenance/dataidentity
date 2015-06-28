@@ -9,7 +9,7 @@ import files.filetype
 Requires OleFileIO-PL and oletools"""
 class OfficeFile(ZIPFile):
     def buildMetadata(self):
-        ZIPFile.buildMetadata(self)
+        # ZIPFile.buildMetadata(self)
         
         print "Doing Office Analysis..."
         extractList = { "docProps/core.xml" : [
