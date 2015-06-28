@@ -126,8 +126,12 @@ def appropriate_response(request, data):
     if wantsJSON:        
         if data.__class__ == Page:
             arr = []
-            for item in data: arr.append(item)
-            serializer = FileModelSerializer(arr)
+            #for item in data: arr.append(item)
+            #serializer = FileModelSerializer(arr)
+            for item in data:
+                print("Item is %s" % item)
+                arr.append(FileModelSerializer(item).data)
+            return JSONResponse(arr)
         else: serializer = FileModelSerializer(data)
         return JSONResponse(serializer.data)
     else:
