@@ -56,6 +56,12 @@ class ZIPFile(AnalysisFactory):
                     template = "{0} Arguments:\n{1!r}"
                     message = template.format(type(err).__name__, err.args)
                     print("Failed to process zipfile item %s (%s): %s" % (zipInfo.orig_filename, self.filename, message))
+                    enc = "encrypted" in message
+
+                    if enc:
+                        self.metadata.append(("ZIPEncrypted", "True"))
+                        return True
+
                     traceback.print_exc(file=sys.stdout)
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     print repr(traceback.format_exception(exc_type, exc_value, exc_traceback))                                        
