@@ -18,8 +18,9 @@ class FileRelationshipModelField(serializers.BaseSerializer):
     def to_representation(self, obj):
         arr = []
         for rel in obj.all():
-            arr.append({"subject" : rel.subject.md5, "verb" : rel.verb, "object" : rel.object.md5})
-        
+            arr.append({"subject" : rel.subject.md5, 
+                        "verb"    : rel.verb, 
+                        "object"  : rel.object.md5})
         return arr
 
 class FileMetadataModelField(serializers.BaseSerializer):
@@ -34,13 +35,10 @@ class FileMetadataModelField(serializers.BaseSerializer):
 class FileNameModelField(serializers.BaseSerializer):
     """Filenames are serialized as a simple primitive location"""
     def to_representation(self, obj):
-        arr = []
-        for fnameEntry in obj.all():
-            arr.append(fnameEntry.location)
-        return arr
+        return obj.location
 
 class FileModelSerializer(serializers.ModelSerializer):
-    names = FileNameModelField()
+    names = FileNameModelField(many=True)
     metadata = FileMetadataModelField()
     subjectOf = FileRelationshipModelField()
     # Don't include objectOf otherwise relationships will occur twice when reflexive.
