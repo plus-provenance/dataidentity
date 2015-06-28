@@ -148,7 +148,7 @@ class AnalysisFactory:
     @return: True if data was written, False otherwise'''
     def writeMetadata(self):        
         if self.firstAnalysis is False and self.redoAnalysis is False:
-            print "Skipping metadata write (%s, %s)" % (self.firstAnalysis, self.redoAnalysis)
+            #print "Skipping metadata write (%s, %s)" % (self.firstAnalysis, self.redoAnalysis)
             return False
                 
         # Delete all previous metadata before writing new.

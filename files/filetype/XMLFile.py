@@ -6,14 +6,14 @@ class XMLFile(AnalysisFactory):
     def buildMetadata(self):
         AnalysisFactory.buildMetadata(self)
         
-        print("Doing XMLFile analysis...")
+        #print("Doing XMLFile analysis...")
         try:
             if self.filename is not None:
                 doc = minidom.parse(self.filename)
             else:
                 self.fh.seek(0)
                 doc = minidom.parse(self.fh)
-            print("Got doc %s" % str(doc))
+            #print("Got doc %s" % str(doc))
         except DTDForbidden:
             print("XML file defines DTD")
             self.metadata.append(("defines-dtd", "true"))
